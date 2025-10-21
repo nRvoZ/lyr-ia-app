@@ -1,0 +1,18 @@
+{
+  "tasks": {},
+  "imports": {
+    "stripe": "https://esm.sh/stripe@17.6.0?target=deno&no-check"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window"],
+    "strict": false,
+    "noImplicitAny": false
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-explicit-any"]
+    }
+  }
+}
+
+
