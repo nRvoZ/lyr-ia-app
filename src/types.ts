@@ -158,7 +158,7 @@ export enum SubscriptionPlan {
   ProAnnual = 'Pro Annual',
   UltimateAnnual = 'Ultimate Annual',
   BusinessAnnual = 'Business Annual',
-  SecretSociety = 'Lyr-IA Society',
+  SecretSociety = 'SecretSociety',  // Valeur technique (en BDD) - Nom affiché défini dans constants_monetization
 }
 
 export interface UserState {

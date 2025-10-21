@@ -132,14 +132,14 @@ const AdminDashboard: React.FC = () => {
       regularUsers.forEach(user => {
         planDistribution[user.plan] = (planDistribution[user.plan] || 0) + 1;
         // Vérifier plusieurs variantes du nom de la Secret Society
-        if (user.plan === 'SecretSociety' || user.plan === 'Lyr-IA Society') {
+        if (user.plan === SubscriptionPlan.SecretSociety) {
           secretSocietyMembers++;
         }
         if (user.is_banned) bannedUsers++;
       });
 
       // Ajouter l'admin s'il a le plan Lyr-IA Society
-      if (user.plan === 'Lyr-IA Society' || user.plan === 'SecretSociety') {
+      if (user.plan === SubscriptionPlan.SecretSociety) {
         secretSocietyMembers++;
         console.log('Admin is Lyr-IA Society member');
       }
@@ -575,7 +575,7 @@ const AdminDashboard: React.FC = () => {
                   </td>
                   <td className="p-2">
                     <span className={`px-2 py-1 rounded text-xs ${
-                      userProfile.plan === 'SecretSociety' ? 'bg-purple-500/20 text-purple-300' :
+                      userProfile.plan === SubscriptionPlan.SecretSociety ? 'bg-purple-500/20 text-purple-300' :
                       userProfile.plan === 'Ultimate' ? 'bg-yellow-500/20 text-yellow-300' :
                       userProfile.plan === 'Pro' ? 'bg-blue-500/20 text-blue-300' :
                       userProfile.plan === 'Discovery' ? 'bg-green-500/20 text-green-300' :
