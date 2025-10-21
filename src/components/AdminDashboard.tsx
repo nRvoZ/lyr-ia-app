@@ -5,6 +5,7 @@ import GlassCard from './common/GlassCard';
 import { SubscriptionPlan } from '../types';
 import * as authService from '../services/authService';
 import { PlanService } from '../services/planService';
+import { DataContext } from '../contexts/DataContext';
 
 interface AdminStats {
   total_users: number;
@@ -32,6 +33,7 @@ interface UserProfile {
 
 const AdminDashboard: React.FC = () => {
   const { user, adminSetBroadcast, adminClearBroadcast, adminGrantCredits, adminResetAchievements } = useContext(UserContext);
+  const data = useContext(DataContext);
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,6 +42,14 @@ const AdminDashboard: React.FC = () => {
   const [inviteEmail, setInviteEmail] = useState('');
   const [broadcastText, setBroadcastText] = useState('');
   const [grantAmount, setGrantAmount] = useState<number>(0);
+
+  // Function to get display name for plan
+  const getPlanDisplayName = (planValue: string): string => {
+    if (!data) return planValue;
+    
+    const plan = data.plans.find(p => p.id === planValue);
+    return plan ? plan.name : planValue;
+  };
 
   // Debug: Log user state
   console.log('AdminDashboard - User state:', user);
@@ -581,7 +591,7 @@ const AdminDashboard: React.FC = () => {
                       userProfile.plan === 'Discovery' ? 'bg-green-500/20 text-green-300' :
                       'bg-gray-500/20 text-gray-300'
                     }`}>
-                      {userProfile.plan}
+                      {getPlanDisplayName(userProfile.plan)}
                     </span>
                   </td>
                   <td className="p-2">
