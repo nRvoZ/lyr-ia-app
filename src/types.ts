@@ -146,6 +146,7 @@ export interface Achievement {
     check: (payload: any, history: HistoryItem[], userState: UserState) => boolean; // A simple check function
     target: number; // For progress-based achievements
     reward?: AchievementReward;
+    icon?: string; // Emoji/icône spécifique pour cet achievement
 }
 
 // Stored in user state
