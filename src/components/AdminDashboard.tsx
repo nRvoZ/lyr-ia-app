@@ -42,6 +42,8 @@ const AdminDashboard: React.FC = () => {
   const [inviteEmail, setInviteEmail] = useState('');
   const [broadcastText, setBroadcastText] = useState('');
   const [grantAmount, setGrantAmount] = useState<number>(0);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
 
   // Function to get display name for plan
   const getPlanDisplayName = (planValue: string): string => {
@@ -80,14 +82,26 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     loadAdminData();
     
-    // Rafraîchissement automatique toutes les 30 secondes
-    const interval = setInterval(loadAdminData, 30000);
+    // Rafraîchissement automatique toutes les 10 secondes (plus fréquent)
+    const interval = setInterval(() => {
+      if (autoRefreshEnabled) {
+        console.log('🔄 Auto-refresh admin data...');
+        loadAdminData();
+      }
+    }, 10000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [autoRefreshEnabled]);
+
+  // Fonction de rafraîchissement manuel
+  const handleRefresh = async () => {
+    console.log('🔄 Manual refresh triggered');
+    await loadAdminData();
+  };
 
   const loadAdminData = async () => {
     try {
+      console.log('📊 Loading admin data...');
       setLoading(true);
       
       // Load users first to calculate stats
@@ -260,9 +274,12 @@ const AdminDashboard: React.FC = () => {
         banned_users: bannedUsers
       });
     } catch (error) {
-      console.error('Error loading admin data:', error);
+      console.error('❌ Error loading admin data:', error);
+      // Afficher une notification d'erreur à l'utilisateur
+      alert('Erreur lors du chargement des données. Vérifiez la connexion.');
     } finally {
       setLoading(false);
+      setLastUpdate(new Date());
     }
   };
 
@@ -461,14 +478,32 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-base-color">🔧 Panneau d'Administration Lyr-IA</h1>
-        <button
-          onClick={loadAdminData}
-          disabled={loading}
-          className="px-4 py-2 bg-primary text-on-primary rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? 'Chargement...' : '🔄 Actualiser'}
-        </button>
+        <div>
+          <h1 className="text-3xl font-bold text-base-color">🔧 Panneau d'Administration Lyr-IA</h1>
+          {lastUpdate && (
+            <p className="text-sm text-muted-color mt-1">
+              Dernière mise à jour : {lastUpdate.toLocaleTimeString()}
+            </p>
+          )}
+        </div>
+        <div className="flex items-center gap-3">
+          <label className="flex items-center gap-2 text-sm text-muted-color">
+            <input
+              type="checkbox"
+              checked={autoRefreshEnabled}
+              onChange={(e) => setAutoRefreshEnabled(e.target.checked)}
+              className="rounded"
+            />
+            Auto-refresh (10s)
+          </label>
+          <button
+            onClick={handleRefresh}
+            disabled={loading}
+            className="px-4 py-2 bg-primary text-on-primary rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Chargement...' : '🔄 Actualiser'}
+          </button>
+        </div>
       </div>
       
       {/* Dashboard Stats */}
