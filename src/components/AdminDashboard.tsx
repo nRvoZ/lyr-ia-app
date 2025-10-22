@@ -154,17 +154,22 @@ const AdminDashboard: React.FC = () => {
         return;
       }
       
-      // Exclure l'admin des statistiques
+      // Séparer les utilisateurs normaux et les admins Lyr-IA Society
       const regularUsers = allUsers.filter(u => !u.is_admin);
-      console.log('Regular users (excluding admin):', regularUsers.length);
-      setUsers(allUsers); // Garder tous les utilisateurs pour la liste, mais calculer les stats sans l'admin
+      const secretSocietyAdmins = allUsers.filter(u => u.is_admin && u.plan === 'SecretSociety');
+      const allUsersForStats = [...regularUsers, ...secretSocietyAdmins];
+      
+      console.log('Regular users:', regularUsers.length);
+      console.log('Secret Society admins:', secretSocietyAdmins.length);
+      console.log('Total users for stats:', allUsersForStats.length);
+      setUsers(allUsers); // Garder tous les utilisateurs pour la liste
 
       // Calculate stats from user data (sans l'admin)
       const planDistribution: Record<string, number> = {};
       let secretSocietyMembers = 0;
       let bannedUsers = 0;
 
-      regularUsers.forEach(user => {
+      allUsersForStats.forEach(user => {
         planDistribution[user.plan] = (planDistribution[user.plan] || 0) + 1;
         
         // Debug: Log each user's plan
@@ -268,10 +273,10 @@ const AdminDashboard: React.FC = () => {
       });
 
       setStats({
-        total_users: regularUsers.length, // Nombre d'utilisateurs sans l'admin
+        total_users: allUsersForStats.length, // Nombre d'utilisateurs incluant les admins Lyr-IA Society
         active_users_today: activeUsersToday,
         total_generations: Math.round(totalGenerations),
-        total_credits_spent: regularUsers.reduce((sum, u) => {
+        total_credits_spent: allUsersForStats.reduce((sum, u) => {
           const currentCredits = typeof u.credits === 'number' ? u.credits : 150;
           
           // Si pas d'initial_credits, estimer basé sur le plan
@@ -290,7 +295,7 @@ const AdminDashboard: React.FC = () => {
           return sum + Math.max(0, initialCredits - currentCredits);
         }, 0),
         plan_distribution: planDistribution,
-        recent_signups: regularUsers.filter(u => {
+        recent_signups: allUsersForStats.filter(u => {
           const createdAt = new Date(u.created_at);
           const today = new Date();
           return createdAt.toDateString() === today.toDateString();
