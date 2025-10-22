@@ -63,25 +63,32 @@ const AchievementCard: React.FC<{ achievement: Achievement; cardId: string }> = 
     return (
         <div 
             id={cardId} 
-            className={`group p-4 rounded-xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer ${tierColors[achievement.tier]} ${isUnlocked ? 'opacity-100' : 'opacity-60'}`}
+            className={`group p-4 rounded-lg border transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer ${tierColors[achievement.tier]} ${isUnlocked ? 'opacity-100' : 'opacity-70'}`}
             onClick={() => openDetailModal(achievement)}
         >
-            <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg bg-white/5 text-3xl group-hover:animate-bounce group-hover:scale-110 transition-all duration-300">
+            <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 text-2xl group-hover:scale-110 transition-all duration-300">
                     {achievement.icon || getCategoryIcon(achievement.category)}
                 </div>
-                <div className="flex-grow">
-                    <div className="flex justify-between items-center">
-                        <h4 className="font-bold text-base-color group-hover:text-primary transition-colors duration-300">{achievement.name}</h4>
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-white/10 group-hover:bg-primary/20 transition-colors duration-300">{achievement.tier}</span>
+                <div className="flex-grow min-w-0">
+                    <div className="flex justify-between items-start mb-1">
+                        <h4 className="font-semibold text-sm text-base-color group-hover:text-primary transition-colors duration-300 truncate">{achievement.name}</h4>
+                        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-white/10 text-xs ml-2 flex-shrink-0">{achievement.tier}</span>
                     </div>
-                    <p className="text-xs text-muted-color mt-1 group-hover:text-white/80 transition-colors duration-300">{achievement.description}</p>
+                    <p className="text-xs text-muted-color mb-3 line-clamp-2">{achievement.description}</p>
                     
-                    <div className="mt-3 space-y-2">
-                        <div className="w-full bg-black/30 rounded-full h-2.5">
-                            <div className={`h-2.5 rounded-full ${tierProgressColors[achievement.tier]}`} style={{ width: `${(progress / achievement.target) * 100}%` }}></div>
+                    <div className="space-y-1">
+                        <div className="w-full bg-black/20 rounded-full h-1.5">
+                            <div className={`h-1.5 rounded-full ${tierProgressColors[achievement.tier]} transition-all duration-500`} style={{ width: `${(progress / achievement.target) * 100}%` }}></div>
                         </div>
-                        <p className="text-xs text-right text-muted-color">{isUnlocked ? 'Terminé !' : `${progress} / ${achievement.target}`}</p>
+                        <div className="flex justify-between items-center">
+                            <p className="text-xs text-muted-color">{isUnlocked ? '✅ Terminé' : `${progress}/${achievement.target}`}</p>
+                            {achievement.reward && (
+                                <span className="text-xs text-yellow-400">
+                                    {achievement.reward.type === 'credits' ? '💰' : '🏷️'}
+                                </span>
+                            )}
+                        </div>
                     </div>
 
                     {achievement.reward && (
@@ -228,39 +235,43 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({ isOpen, onClose, 
     >
       <div ref={modalRef} className="w-full max-w-4xl">
         <GlassCard className="p-6 max-h-[90vh] flex flex-col">
-            <div className="text-center mb-4 flex-shrink-0">
-                <h2 className="text-3xl font-bold text-base-color">Salle des Trophées</h2>
-                <p className="text-muted-color">Suivez vos exploits et récupérez vos récompenses.</p>
+            {/* Header simplifié */}
+            <div className="text-center mb-6 flex-shrink-0">
+                <h2 className="text-2xl font-bold text-base-color mb-2">🏆 Salle des Trophées</h2>
+                <p className="text-sm text-muted-color">Découvrez et débloquez vos achievements</p>
             </div>
             
-            {/* Statistiques en colonnes comme avant */}
-            <div className="grid grid-cols-3 gap-4 mb-6 flex-shrink-0">
-                <div className="stat-card bg-gradient-to-r from-yellow-600/20 to-yellow-400/20 border border-yellow-500/30 rounded-lg p-3 text-center">
-                    <div className="text-2xl mb-1">🏆</div>
-                    <div className="text-lg font-bold text-yellow-300">{stats.unlockedCount}</div>
-                    <div className="text-xs text-yellow-200">Débloqués</div>
+            {/* Stats compactes en une ligne */}
+            <div className="flex justify-center gap-8 mb-6 flex-shrink-0">
+                <div className="text-center">
+                    <div className="text-2xl font-bold text-yellow-400">{stats.unlockedCount}</div>
+                    <div className="text-xs text-muted-color">Débloqués</div>
                 </div>
-                <div className="stat-card bg-gradient-to-r from-cyan-600/20 to-cyan-400/20 border border-cyan-500/30 rounded-lg p-3 text-center">
-                    <div className="text-2xl mb-1">💎</div>
-                    <div className="text-lg font-bold text-cyan-300">{stats.diamondCount}</div>
-                    <div className="text-xs text-cyan-200">Diamants</div>
+                <div className="text-center">
+                    <div className="text-2xl font-bold text-cyan-400">{stats.diamondCount}</div>
+                    <div className="text-xs text-muted-color">Diamants</div>
                 </div>
-                <div className="stat-card bg-gradient-to-r from-green-600/20 to-green-400/20 border border-green-500/30 rounded-lg p-3 text-center">
-                    <div className="text-2xl mb-1">🎯</div>
-                    <div className="text-lg font-bold text-green-300">{stats.completionRate}%</div>
-                    <div className="text-xs text-green-200">Progression</div>
+                <div className="text-center">
+                    <div className="text-2xl font-bold text-green-400">{stats.completionRate}%</div>
+                    <div className="text-xs text-muted-color">Progression</div>
                 </div>
             </div>
             
-            {/* Navigation simplifiée - Suppression de la recherche complexe */}
-            
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 flex-shrink-0">
-                <div className="flex flex-wrap gap-2">
+            {/* Navigation ultra-simplifiée */}
+            <div className="mb-6 flex-shrink-0">
+                {/* Filtres principaux */}
+                <div className="flex flex-wrap justify-center gap-2 mb-3">
                     <FilterButton label="Tout" isActive={activeCategory === 'All'} onClick={() => setActiveCategory('All')} />
-                    {categories.map(cat => <FilterButton key={cat} label={cat} isActive={activeCategory === cat} onClick={() => setActiveCategory(cat)} />)}
-                    {hasUnlockedEasterEgg && <FilterButton label={AchievementCategory.EasterEgg} isActive={activeCategory === AchievementCategory.EasterEgg} onClick={() => setActiveCategory(AchievementCategory.EasterEgg)} />}
+                    <FilterButton label="Génération" isActive={activeCategory === AchievementCategory.Generation} onClick={() => setActiveCategory(AchievementCategory.Generation)} />
+                    <FilterButton label="Exploration" isActive={activeCategory === AchievementCategory.Exploration} onClick={() => setActiveCategory(AchievementCategory.Exploration)} />
+                    <FilterButton label="Collection" isActive={activeCategory === AchievementCategory.Collection} onClick={() => setActiveCategory(AchievementCategory.Collection)} />
+                    <FilterButton label="Maîtrise" isActive={activeCategory === AchievementCategory.Mastery} onClick={() => setActiveCategory(AchievementCategory.Mastery)} />
+                    <FilterButton label="Prestige" isActive={activeCategory === AchievementCategory.Prestige} onClick={() => setActiveCategory(AchievementCategory.Prestige)} />
+                    {hasUnlockedEasterEgg && <FilterButton label="Easter Egg" isActive={activeCategory === AchievementCategory.EasterEgg} onClick={() => setActiveCategory(AchievementCategory.EasterEgg)} />}
                 </div>
-                 <div className="flex gap-2 p-1 bg-black/20 rounded-full">
+                
+                {/* Filtres secondaires */}
+                <div className="flex justify-center gap-2">
                     <FilterButton label="Tous" isActive={filterStatus === 'All'} onClick={() => setFilterStatus('All')} />
                     <FilterButton label="Terminés" isActive={filterStatus === 'Completed'} onClick={() => setFilterStatus('Completed')} />
                     <FilterButton label="En cours" isActive={filterStatus === 'InProgress'} onClick={() => setFilterStatus('InProgress')} />
@@ -272,10 +283,10 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({ isOpen, onClose, 
                     {filteredAchievements.map(ach => <AchievementCard key={ach.id} achievement={ach} cardId={`achievement-card-${ach.id}`} />)}
                 </div>
                 {filteredAchievements.length === 0 && (
-                  <div className="text-center py-12">
-                    <div className="text-6xl mb-4">🔍</div>
-                    <h3 className="text-xl font-semibold text-base-color mb-2">Aucun achievement trouvé</h3>
-                    <p className="text-muted-color">Essayez de modifier vos filtres ou votre recherche.</p>
+                  <div className="text-center py-16">
+                    <div className="text-5xl mb-4">🎯</div>
+                    <h3 className="text-lg font-semibold text-base-color mb-2">Aucun achievement trouvé</h3>
+                    <p className="text-sm text-muted-color">Essayez de changer de catégorie ou de statut</p>
                   </div>
                 )}
             </div>
