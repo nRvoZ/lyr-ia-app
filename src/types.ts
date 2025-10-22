@@ -118,10 +118,22 @@ export enum RewardType {
     Theme = 'theme',
 }
 
+export enum TitleColor {
+    White = 'white',           // Titres communs
+    Green = 'green',           // Titres Bronze
+    Blue = 'blue',             // Titres Silver
+    Purple = 'purple',         // Titres Gold
+    Orange = 'orange',         // Titres Diamond
+    Red = 'red',               // Titres Légendaires
+    Rainbow = 'rainbow',       // Titres Ultra-Rares
+    Gold = 'gold',             // Titres Prestige
+}
+
 export interface AchievementReward {
     type: RewardType;
     value: number | string;
     description: string;
+    titleColor?: TitleColor;   // Couleur du titre si c'est une récompense de titre
 }
 
 export interface Achievement {

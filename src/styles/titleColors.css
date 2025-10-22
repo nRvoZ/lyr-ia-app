@@ -1,0 +1,129 @@
+/* 🎨 Couleurs de Titres pour les Achievements */
+
+/* Titres Communs - Blanc */
+.title-color-white {
+  color: #ffffff;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+/* Titres Bronze - Vert */
+.title-color-green {
+  color: #4ade80;
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
+}
+
+/* Titres Silver - Bleu */
+.title-color-blue {
+  color: #60a5fa;
+  text-shadow: 0 0 10px rgba(96, 165, 250, 0.6);
+}
+
+/* Titres Gold - Violet */
+.title-color-purple {
+  color: #c084fc;
+  text-shadow: 0 0 12px rgba(192, 132, 252, 0.7);
+}
+
+/* Titres Diamond - Orange */
+.title-color-orange {
+  color: #fb923c;
+  text-shadow: 0 0 15px rgba(251, 146, 60, 0.8);
+}
+
+/* Titres Légendaires - Rouge */
+.title-color-red {
+  color: #f87171;
+  text-shadow: 0 0 18px rgba(248, 113, 113, 0.9);
+}
+
+/* Titres Prestige - Or */
+.title-color-gold {
+  color: #fbbf24;
+  text-shadow: 0 0 20px rgba(251, 191, 36, 1);
+  font-weight: 700;
+}
+
+/* Titres Ultra-Rares - Arc-en-ciel Animé */
+.title-color-rainbow {
+  background: linear-gradient(
+    90deg,
+    #ff0000,
+    #ff7f00,
+    #ffff00,
+    #00ff00,
+    #0000ff,
+    #4b0082,
+    #9400d3,
+    #ff0000
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-flow 3s linear infinite;
+  font-weight: 800;
+  text-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.3),
+    0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+@keyframes rainbow-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+/* Effet de surbrillance au survol */
+.title-with-color:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* Badge de titre avec couleur */
+.title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.title-badge:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Icône de couronne pour les titres prestigieux */
+.title-crown {
+  display: inline-block;
+  margin-right: 0.25rem;
+}
+
+/* Animation d'apparition pour nouveaux titres */
+@keyframes title-unlock {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-10deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.title-unlock-animation {
+  animation: title-unlock 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
