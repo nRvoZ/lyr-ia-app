@@ -44,6 +44,7 @@ const AdminDashboard: React.FC = () => {
   const [grantAmount, setGrantAmount] = useState<number>(0);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Function to get display name for plan
   const getPlanDisplayName = (planValue: string): string => {
@@ -80,17 +81,26 @@ const AdminDashboard: React.FC = () => {
   }
 
   useEffect(() => {
+    console.log('🚀 AdminDashboard mounted, loading initial data...');
     loadAdminData();
-    
-    // Rafraîchissement automatique toutes les 10 secondes (plus fréquent)
+  }, []);
+
+  useEffect(() => {
+    if (!autoRefreshEnabled) {
+      console.log('⏸️ Auto-refresh disabled');
+      return;
+    }
+
+    console.log('🔄 Setting up auto-refresh interval (10s)');
     const interval = setInterval(() => {
-      if (autoRefreshEnabled) {
-        console.log('🔄 Auto-refresh admin data...');
-        loadAdminData();
-      }
+      console.log('🔄 Auto-refresh admin data...');
+      loadAdminData();
     }, 10000);
     
-    return () => clearInterval(interval);
+    return () => {
+      console.log('🧹 Cleaning up auto-refresh interval');
+      clearInterval(interval);
+    };
   }, [autoRefreshEnabled]);
 
   // Fonction de rafraîchissement manuel
@@ -102,6 +112,7 @@ const AdminDashboard: React.FC = () => {
   const loadAdminData = async () => {
     try {
       console.log('📊 Loading admin data...');
+      setIsRefreshing(true);
       setLoading(true);
       
       // Load users first to calculate stats
@@ -279,6 +290,7 @@ const AdminDashboard: React.FC = () => {
       alert('Erreur lors du chargement des données. Vérifiez la connexion.');
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
       setLastUpdate(new Date());
     }
   };
@@ -483,6 +495,9 @@ const AdminDashboard: React.FC = () => {
           {lastUpdate && (
             <p className="text-sm text-muted-color mt-1">
               Dernière mise à jour : {lastUpdate.toLocaleTimeString()}
+              {isRefreshing && (
+                <span className="ml-2 text-primary animate-pulse">🔄 Actualisation...</span>
+              )}
             </p>
           )}
         </div>
@@ -498,10 +513,10 @@ const AdminDashboard: React.FC = () => {
           </label>
           <button
             onClick={handleRefresh}
-            disabled={loading}
+            disabled={loading || isRefreshing}
             className="px-4 py-2 bg-primary text-on-primary rounded-lg hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? 'Chargement...' : '🔄 Actualiser'}
+            {loading ? 'Chargement...' : isRefreshing ? '🔄 Actualisation...' : '🔄 Actualiser'}
           </button>
         </div>
       </div>
