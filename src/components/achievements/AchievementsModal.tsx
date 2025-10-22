@@ -260,22 +260,19 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({ isOpen, onClose, 
                 <p className="text-muted-color">Suivez vos exploits et récupérez vos récompenses.</p>
             </div>
             
-            {/* Statistiques en temps réel */}
-            <div className="grid grid-cols-3 gap-4 mb-6 flex-shrink-0">
-                <div className="stat-card bg-gradient-to-r from-yellow-600/20 to-yellow-400/20 border border-yellow-500/30 rounded-lg p-3 text-center">
-                    <div className="text-2xl mb-1">🏆</div>
-                    <div className="text-lg font-bold text-yellow-300">{stats.unlockedCount}</div>
-                    <div className="text-xs text-yellow-200">Débloqués</div>
+            {/* Statistiques simplifiées */}
+            <div className="flex justify-center gap-6 mb-4 flex-shrink-0">
+                <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">{stats.unlockedCount}</div>
+                    <div className="text-xs text-muted-color">Débloqués</div>
                 </div>
-                <div className="stat-card bg-gradient-to-r from-cyan-600/20 to-cyan-400/20 border border-cyan-500/30 rounded-lg p-3 text-center">
-                    <div className="text-2xl mb-1">💎</div>
-                    <div className="text-lg font-bold text-cyan-300">{stats.diamondCount}</div>
-                    <div className="text-xs text-cyan-200">Diamants</div>
+                <div className="text-center">
+                    <div className="text-2xl font-bold text-cyan-400">{stats.diamondCount}</div>
+                    <div className="text-xs text-muted-color">Diamants</div>
                 </div>
-                <div className="stat-card bg-gradient-to-r from-green-600/20 to-green-400/20 border border-green-500/30 rounded-lg p-3 text-center">
-                    <div className="text-2xl mb-1">🎯</div>
-                    <div className="text-lg font-bold text-green-300">{stats.completionRate}%</div>
-                    <div className="text-xs text-green-200">Progression</div>
+                <div className="text-center">
+                    <div className="text-2xl font-bold text-green-400">{stats.completionRate}%</div>
+                    <div className="text-xs text-muted-color">Progression</div>
                 </div>
             </div>
             
