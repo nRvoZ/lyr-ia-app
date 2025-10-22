@@ -173,15 +173,14 @@ const AdminDashboard: React.FC = () => {
         if (user.is_banned) bannedUsers++;
       });
 
-      // Ajouter l'admin s'il a le plan Lyr-IA Society
-      if (user.plan === SubscriptionPlan.SecretSociety) {
-        secretSocietyMembers++;
-        console.log('Admin is Lyr-IA Society member');
-      }
+      // NE PAS ajouter l'admin aux statistiques - il est déjà exclu des regularUsers
+      // L'admin n'apparaît que dans la liste des utilisateurs, pas dans les stats
+      console.log('Admin plan:', user.plan, 'SecretSociety:', SubscriptionPlan.SecretSociety);
 
       // Log des plans pour débogage
       console.log('User plans found:', Object.keys(planDistribution));
-      console.log('Secret Society members (including admin):', secretSocietyMembers);
+      console.log('Secret Society members (regular users only):', secretSocietyMembers);
+      console.log('Total regular users:', regularUsers.length);
 
       // Calculer les utilisateurs actifs aujourd'hui (dernière connexion dans les 24h) - sans l'admin
       const today = new Date();
@@ -245,12 +244,16 @@ const AdminDashboard: React.FC = () => {
         console.log('Generations from credits estimation:', totalGenerations);
       }
 
-      console.log('Stats calculation:', {
+      console.log('📊 Stats calculation:', {
         totalUsers: regularUsers.length,
         activeUsersToday,
         totalGenerations,
         secretSocietyMembers,
-        bannedUsers
+        bannedUsers,
+        planDistribution,
+        allUsersCount: allUsers.length,
+        regularUsersCount: regularUsers.length,
+        adminIncluded: allUsers.filter(u => u.is_admin).length
       });
 
       setStats({
