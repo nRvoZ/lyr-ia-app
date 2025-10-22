@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState, useMemo } from 'react';
 import { UserContext } from '../../contexts/SupabaseUserContext';
 import { Achievement, AchievementCategory, AchievementTier, RewardType } from '../../types';
 import { DataContext } from '../../contexts/DataContext';
