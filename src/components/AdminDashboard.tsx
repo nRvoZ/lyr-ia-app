@@ -43,7 +43,7 @@ const AdminDashboard: React.FC = () => {
   const [broadcastText, setBroadcastText] = useState('');
   const [grantAmount, setGrantAmount] = useState<number>(0);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
-  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(true);
+  const [autoRefreshEnabled, setAutoRefreshEnabled] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Function to get display name for plan
