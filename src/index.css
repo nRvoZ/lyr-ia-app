@@ -1,3 +1,6 @@
+/* Import des animations d'achievements */
+@import './styles/achievements.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
