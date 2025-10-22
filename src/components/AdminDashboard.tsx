@@ -128,6 +128,12 @@ const AdminDashboard: React.FC = () => {
         .select('user_id, credits_used, created_at')
         .order('created_at', { ascending: false });
 
+      // Alternative: Load total generations from user_profiles
+      const { data: totalSongsData, error: totalSongsError } = await supabase
+        .from('user_profiles')
+        .select('total_songs_generated')
+        .not('total_songs_generated', 'is', null);
+
       if (usersError) {
         console.error('Error loading users:', usersError);
         throw usersError;
@@ -135,8 +141,10 @@ const AdminDashboard: React.FC = () => {
       
       console.log('Users loaded:', usersData?.length || 0);
       console.log('History loaded:', historyData?.length || 0);
+      console.log('Total songs data loaded:', totalSongsData?.length || 0);
       const allUsers = usersData || [];
       const songHistory = historyData || [];
+      const totalSongsFromDB = totalSongsData || [];
       
       if (allUsers.length === 0) {
         console.warn('No users found in database');
@@ -212,30 +220,36 @@ const AdminDashboard: React.FC = () => {
         return lastLogin >= yesterday;
       }).length;
 
-      // Calculer les générations totales - méthode 1: basé sur l'historique des chansons
+      // Calculer les générations totales - méthode 1: basé sur total_songs_generated
       let totalGenerations = 0;
-      if (songHistory.length > 0) {
+      if (totalSongsFromDB.length > 0) {
+        // Utiliser les données total_songs_generated de la base
+        const allUserIds = allUsersForStats.map(u => u.id);
+        const relevantSongsData = totalSongsFromDB.filter((_, index) => {
+          const user = allUsers.find(u => u.id === allUsers[index]?.id);
+          return user && allUserIds.includes(user.id);
+        });
+        
+        totalGenerations = relevantSongsData.reduce((sum, data) => {
+          return sum + (data.total_songs_generated || 0);
+        }, 0);
+        
+        console.log('Total generations from DB:', totalGenerations);
+      } else if (songHistory.length > 0) {
         // Utiliser l'historique réel des générations
-        const regularUserIds = regularUsers.map(u => u.id);
-        console.log('Regular user IDs:', regularUserIds);
+        const allUserIds = allUsersForStats.map(u => u.id);
+        console.log('All user IDs for stats:', allUserIds);
         console.log('History user IDs:', songHistory.map(h => h.user_id));
         
-        const regularUserHistory = songHistory.filter(h => regularUserIds.includes(h.user_id));
-        console.log('Filtered history for regular users:', regularUserHistory.length);
+        const allUserHistory = songHistory.filter(h => allUserIds.includes(h.user_id));
+        console.log('Filtered history for all users:', allUserHistory.length);
         
-        // Si le filtrage ne donne rien, utiliser toutes les générations (sauf celles de l'admin)
-        if (regularUserHistory.length === 0) {
-          const adminId = user.id; // ID de l'admin actuel
-          const nonAdminHistory = songHistory.filter(h => h.user_id !== adminId);
-          totalGenerations = nonAdminHistory.length;
-          console.log('Using all non-admin history:', totalGenerations);
-        } else {
-          totalGenerations = regularUserHistory.length;
-        }
+        totalGenerations = allUserHistory.length;
+        console.log('Total generations from history:', totalGenerations);
         console.log('Final generations count:', totalGenerations);
       } else {
         // Méthode 2: estimation basée sur les crédits utilisés
-        totalGenerations = regularUsers.reduce((sum, u) => {
+        totalGenerations = allUsersForStats.reduce((sum, u) => {
           const currentCredits = typeof u.credits === 'number' ? u.credits : 150;
           
           // Si pas d'initial_credits, estimer basé sur le plan
