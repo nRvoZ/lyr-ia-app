@@ -189,6 +189,7 @@ const AdminDashboard: React.FC = () => {
 
       // Log des plans pour débogage
       console.log('User plans found:', Object.keys(planDistribution));
+      console.log('All user plans in database:', regularUsers.map(u => `${u.username}: "${u.plan}"`));
       console.log('Secret Society members (regular users only):', secretSocietyMembers);
       console.log('Total regular users:', regularUsers.length);
 
