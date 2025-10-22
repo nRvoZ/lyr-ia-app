@@ -46,7 +46,7 @@ const AchievementToast: React.FC<AchievementToastProps> = ({ achievement, onClos
         >
             <div className="p-4 flex items-center space-x-3">
                 <div className="flex-shrink-0 text-2xl">
-                    <TrophyIcon />
+                    {achievement.icon || <TrophyIcon />}
                 </div>
                 <div>
                     <p className="text-xs font-bold uppercase tracking-wider text-white/80">Succès Déverrouillé</p>

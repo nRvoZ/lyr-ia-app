@@ -63,7 +63,9 @@ const AchievementCard: React.FC<{ achievement: Achievement; cardId: string }> = 
     return (
         <div id={cardId} className={`p-4 rounded-xl border-2 transition-all duration-300 ${tierColors[achievement.tier]} ${isUnlocked ? 'opacity-100' : 'opacity-60'}`}>
             <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-white/5">{getCategoryIcon(achievement.category)}</div>
+                <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 text-2xl">
+                    {achievement.icon || getCategoryIcon(achievement.category)}
+                </div>
                 <div className="flex-grow">
                     <div className="flex justify-between items-center">
                         <h4 className="font-bold text-base-color">{achievement.name}</h4>
