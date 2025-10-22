@@ -166,9 +166,19 @@ const AdminDashboard: React.FC = () => {
 
       regularUsers.forEach(user => {
         planDistribution[user.plan] = (planDistribution[user.plan] || 0) + 1;
+        
+        // Debug: Log each user's plan
+        console.log(`User ${user.username}: plan="${user.plan}", SecretSociety="${SubscriptionPlan.SecretSociety}", match=${user.plan === SubscriptionPlan.SecretSociety}`);
+        
         // Vérifier plusieurs variantes du nom de la Secret Society
-        if (user.plan === SubscriptionPlan.SecretSociety) {
+        const isSecretSociety = user.plan === SubscriptionPlan.SecretSociety || 
+                               user.plan === 'SecretSociety' ||
+                               user.plan === 'Lyr-IA Society' ||
+                               user.plan === 'LyrIA Society';
+        
+        if (isSecretSociety) {
           secretSocietyMembers++;
+          console.log(`✅ Found Secret Society member: ${user.username} (plan: "${user.plan}")`);
         }
         if (user.is_banned) bannedUsers++;
       });
