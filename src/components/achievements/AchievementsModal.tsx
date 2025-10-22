@@ -123,8 +123,6 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({ isOpen, onClose, 
   const [filterStatus, setFilterStatus] = useState<'All' | 'Completed' | 'InProgress'>('All');
   const [selectedAchievement, setSelectedAchievement] = useState<Achievement | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<'tier' | 'progress' | 'name'>('tier');
   const { user } = useContext(UserContext);
   const { allAchievements } = useContext(DataContext);
 
@@ -147,7 +145,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({ isOpen, onClose, 
     setIsDetailModalOpen(false);
   };
 
-  // Logique de filtrage et tri
+  // Logique de filtrage simplifiée
   const filteredAchievements = useMemo(() => {
     let filtered = allAchievements;
 
@@ -166,33 +164,8 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({ isOpen, onClose, 
       });
     }
 
-    // Recherche par nom ou description
-    if (searchTerm) {
-      filtered = filtered.filter(ach => 
-        ach.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ach.description.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Tri
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'tier':
-          const tierOrder = { [AchievementTier.Diamond]: 4, [AchievementTier.Gold]: 3, [AchievementTier.Silver]: 2, [AchievementTier.Bronze]: 1 };
-          return (tierOrder[b.tier] || 0) - (tierOrder[a.tier] || 0);
-        case 'progress':
-          const aProgress = user.achievements[a.id]?.progress || 0;
-          const bProgress = user.achievements[b.id]?.progress || 0;
-          return bProgress - aProgress;
-        case 'name':
-          return a.name.localeCompare(b.name);
-        default:
-          return 0;
-      }
-    });
-
     return filtered;
-  }, [allAchievements, activeCategory, filterStatus, searchTerm, sortBy, user.achievements]);
+  }, [allAchievements, activeCategory, filterStatus, user.achievements]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -279,31 +252,7 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({ isOpen, onClose, 
                 </div>
             </div>
             
-            {/* Barre de recherche et tri */}
-            <div className="mb-4 flex-shrink-0">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1">
-                  <input
-                    type="text"
-                    placeholder="Rechercher un achievement..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full px-4 py-2 bg-black/20 border border-white/20 rounded-lg text-base-color placeholder-muted-color focus:border-primary focus:outline-none rounded-lg"
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as 'tier' | 'progress' | 'name')}
-                    className="px-3 py-2 bg-black/20 border border-white/20 rounded-lg text-base-color focus:border-primary focus:outline-none"
-                  >
-                    <option value="tier">💎 Par Rareté</option>
-                    <option value="progress">📈 Par Progression</option>
-                    <option value="name">🔤 Par Nom</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            {/* Navigation simplifiée - Suppression de la recherche complexe */}
             
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 flex-shrink-0">
                 <div className="flex flex-wrap gap-2">
